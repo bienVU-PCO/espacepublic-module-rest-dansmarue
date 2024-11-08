@@ -1514,14 +1514,14 @@ public class SignalementRest
 
     /*
      * Gets the anomalie by number.
-     * 
+     *
      * Ancienne méthode de récupération sans le guid. Permet aux users n'ayant pas fait la MAJ de l'appli de pouvoir utiliser la recherche sans guid (mais avec
      * le bug de suivi: DMR-2092)
      *
      * @param number the number
-     * 
+     *
      * @param request the request
-     * 
+     *
      * @return the anomalie by number
      */
     @GET
@@ -1600,6 +1600,50 @@ public class SignalementRest
             error.setErrorMessage( StringUtils.EMPTY );
 
             return formatterJson.format( error );
+        }
+    }
+
+    /**
+     * Save the answer of the satisfaction form.
+     *
+     * @param parameters
+     *            the request parameter
+     */
+    @POST
+    @Consumes( {
+            MediaType.APPLICATION_JSON
+    } )
+    @Produces( {
+            MediaType.APPLICATION_JSON + ";charset=utf-8"
+    } )
+    @Path( LibrarySiraConstants.REST_GET_SAVE_SATISFACTION_FORM_ANSWER )
+    public String getSaveSatisfactionFormAnswer( String parameters )
+    {
+        try
+        {
+            JSONObject object = new ObjectMapper( ).readValue( parameters, JSONObject.class );
+            ObjectMapper mapper = new ObjectMapper( ).setVisibility( JsonMethod.FIELD, Visibility.ANY );
+
+            String strToken = object.containsKey( "token" )
+                    ? object.getString( "token" )
+                    : null;
+
+            String strChoix = object.containsKey( "choix" )
+                    ? object.getString( "choix" )
+                    : null;
+
+           String strCommentaire = object.containsKey( "commentaire" )
+                    ? object.getString( "commentaire" )
+                    : null;
+
+            JSONObject response = _signalementRestService.updateSignalementByTokenWithSatisfactionFormAnswerAndComment( strToken, strChoix, strCommentaire );
+
+            return response.toString( );
+        }
+        catch( IOException e )
+        {
+            AppLogService.error( e );
+            return formatJsonError( SignalementRestConstants.ERROR_GET_ALL_SOUS_TYPE_SIGNALEMENT_CASCADE, e.getMessage( ) );
         }
     }
 }
