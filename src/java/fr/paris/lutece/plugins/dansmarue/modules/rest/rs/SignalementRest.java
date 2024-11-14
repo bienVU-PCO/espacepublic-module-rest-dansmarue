@@ -1408,6 +1408,7 @@ public class SignalementRest
         json.accumulate( "mois", signalement.getMois( ) );
         json.accumulate( "numero", signalement.getNumero( ) );
         json.accumulate( "typeSignalement", formatJsonTypeSignalement( signalement.getTypeSignalement( ) ) );
+        json.accumulate( "nombreFeedback", signalement.getNombreFeedback( ) );
 
         return json.toString( );
     }
