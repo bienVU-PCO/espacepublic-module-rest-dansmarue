@@ -184,6 +184,9 @@ public final class SignalementRestConstants
     /** The Constant JSON_TAG_GUID. */
     public static final String JSON_TAG_GUID = "guid";
 
+    /** The Constant JSON_TAG_SEARCH_BY_NUMBER. */
+    public static final String JSON_TAG_SEARCH_BY_NUMBER = "searchByNumber";
+
     /** The Constant JSON_TAG_ANOMALY_DONE. */
     public static final String JSON_TAG_ANOMALY_DONE = "service fait";
 
@@ -469,7 +472,7 @@ public final class SignalementRestConstants
 
     /** The Constant REQUEST_TYPE_CHECK_VERSION. */
     public static final String REQUEST_TYPE_CHECK_VERSION = "checkVersion";
-    
+
     public static final String REQUEST_TYPE_IS_MAIL_AGENT = "isMailAgent";
 
     /** The Constant UPDATE_STATUS_RESOLVED. */
@@ -864,7 +867,7 @@ public final class SignalementRestConstants
     /** The Constant PROPERTY_ID_STATE_SERVICE_FAIT. */
     // STATUS
     public static final String PROPERTY_ID_STATE_SERVICE_FAIT = "signalement.idStateServiceFait";
-    
+
     /**
      * Constructor.
      */

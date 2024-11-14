@@ -55,13 +55,27 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import fr.paris.lutece.plugins.dansmarue.business.entities.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 
+import fr.paris.lutece.plugins.dansmarue.business.entities.Adresse;
+import fr.paris.lutece.plugins.dansmarue.business.entities.Arrondissement;
+import fr.paris.lutece.plugins.dansmarue.business.entities.MessageTypologie;
+import fr.paris.lutece.plugins.dansmarue.business.entities.NotificationSignalementUserMultiContents;
+import fr.paris.lutece.plugins.dansmarue.business.entities.ObservationRejet;
+import fr.paris.lutece.plugins.dansmarue.business.entities.Photo;
+import fr.paris.lutece.plugins.dansmarue.business.entities.PhotoDMR;
+import fr.paris.lutece.plugins.dansmarue.business.entities.Priorite;
+import fr.paris.lutece.plugins.dansmarue.business.entities.SatisfactionFeedback;
+import fr.paris.lutece.plugins.dansmarue.business.entities.Signalement;
+import fr.paris.lutece.plugins.dansmarue.business.entities.SignalementGeoLoc;
+import fr.paris.lutece.plugins.dansmarue.business.entities.Signaleur;
+import fr.paris.lutece.plugins.dansmarue.business.entities.SiraUser;
+import fr.paris.lutece.plugins.dansmarue.business.entities.Source;
+import fr.paris.lutece.plugins.dansmarue.business.entities.TypeSignalement;
 import fr.paris.lutece.plugins.dansmarue.business.exceptions.AlreadyFollowedException;
 import fr.paris.lutece.plugins.dansmarue.business.exceptions.InvalidStateActionException;
 import fr.paris.lutece.plugins.dansmarue.business.exceptions.NonExistentFollowItem;
@@ -391,7 +405,7 @@ public class SignalementRestService implements ISignalementRestService
         json.accumulate( SignalementRestConstants.JSON_TAG_STATUS, 0 );
 
         List<Signalement> listSignalement = _signalementService.findAllSignalementInPerimeterWithInfo( Double.parseDouble( strLatitude ),
-                Double.parseDouble( strLongitude ), Integer.valueOf( strRadius ) );
+                Double.parseDouble( strLongitude ), Integer.valueOf( strRadius ), StringUtils.EMPTY );
 
         AppLogService.info( "module-signalement-rest getIncidentStats" );
         int nOnGoingIncidents = 0;
@@ -597,6 +611,11 @@ public class SignalementRestService implements ISignalementRestService
         String strRadius = AppPropertiesService.getProperty( SignalementRestConstants.PROPERTY_RADIUS );
         String guid = jsonSrc.has( SignalementRestConstants.JSON_TAG_GUID ) ? jsonSrc.getString( SignalementRestConstants.JSON_TAG_GUID ) : null;
 
+        // not empty if case Android searchByNumber
+        String specificSignalementNumberSearch = jsonSrc.has( SignalementRestConstants.JSON_TAG_SEARCH_BY_NUMBER )
+                ? jsonSrc.getString( SignalementRestConstants.JSON_TAG_SEARCH_BY_NUMBER )
+                        : StringUtils.EMPTY;
+
         if ( StringUtils.isBlank( strLatitude ) || StringUtils.isBlank( strLongitude ) || StringUtils.isBlank( strRadius ) )
         {
             ErrorSignalement error = new ErrorSignalement( );
@@ -607,7 +626,7 @@ public class SignalementRestService implements ISignalementRestService
         }
 
         List<Signalement> listSignalement = _signalementService.findAllSignalementInPerimeterWithInfo( Double.parseDouble( strLatitude ),
-                Double.parseDouble( strLongitude ), Integer.valueOf( strRadius ) );
+                Double.parseDouble( strLongitude ), Integer.valueOf( strRadius ), specificSignalementNumberSearch );
 
         List<Signalement> listSignalementSorted = getSignalementListSorted( Double.parseDouble( strLatitude ), Double.parseDouble( strLongitude ),
                 listSignalement );
