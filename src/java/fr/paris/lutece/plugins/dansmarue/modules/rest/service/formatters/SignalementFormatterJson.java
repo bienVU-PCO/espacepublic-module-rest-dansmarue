@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.dansmarue.modules.rest.service.formatters;
 
 import java.util.List;
 
+import fr.paris.lutece.plugins.dansmarue.business.entities.TypeSignalement;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -144,6 +145,25 @@ public class SignalementFormatterJson implements IFormatter<Signalement>
             jsonObject.accumulate( SignalementRestConstants.JSON_TAG_INCIDENT_ID, signalement.getId( ) );
 
             int idCategory = typeSignalementService.getCategoryFromTypeId( signalement.getTypeSignalement( ).getId( ) );
+            String aliasMobile = null;
+            if ( idCategory == -1 )
+            {
+                boolean isCategoryFind = false;
+                TypeSignalement typeSignalement = signalement.getTypeSignalement( );
+                while ( !isCategoryFind )
+                {
+                    if ( typeSignalement.getTypeSignalementParent( ) != null )
+                    {
+                        typeSignalement = typeSignalement.getTypeSignalementParent( );
+                    }
+                    else
+                    {
+                        idCategory = typeSignalement.getId( );
+                        aliasMobile = typeSignalement.getAliasMobileDefault( );
+                        isCategoryFind = true;
+                    }
+                }
+            }
 
             jsonObject.accumulate( SignalementRestConstants.JSON_TAG_INCIDENT_CATEGORIE_ID, idCategory );
 
@@ -164,7 +184,7 @@ public class SignalementFormatterJson implements IFormatter<Signalement>
 
             jsonObject.accumulate( SignalementRestConstants.JSON_TAG_INCIDENT_CONGRATULATIONS, signalement.getFelicitations( ) );
 
-            jsonObject.accumulate( SignalementRestConstants.JSON_TAG_INCIDENT_ALIAS, signalement.getTypeSignalement( ).getAliasMobileDefault( ) );
+            jsonObject.accumulate( SignalementRestConstants.JSON_TAG_INCIDENT_ALIAS, aliasMobile != null ? aliasMobile : signalement.getTypeSignalement( ).getAliasMobileDefault( ) );
             String strStatus = "O";
 
             // set the state of the signalement with the workflow
