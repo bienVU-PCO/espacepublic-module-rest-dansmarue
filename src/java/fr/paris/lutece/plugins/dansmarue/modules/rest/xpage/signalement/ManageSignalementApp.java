@@ -256,6 +256,8 @@ public class ManageSignalementApp implements XPageApplication
 
                     request.getSession( ).setAttribute( PARAMETER_CHOSEN_MESSAGE, request.getParameter( PARAMETER_CHOSEN_MESSAGE ) );
 
+                    request.getSession( ).setAttribute( PARAMETER_PHOTO_DONE, imageFile );
+
                     error = _manageSignalementService.processAction( request, action, bean, request.getParameter( "commentaires" ),
                             request.getParameterValues( PARAMETER_MOTIF_REJET ), motifAutre, request.getParameter( "dateProgrammation" ), idTypeAnomalie,
                             imageFile );
@@ -268,6 +270,7 @@ public class ManageSignalementApp implements XPageApplication
                         if ( _dansmarueUploadHandler.hasFile( request, PARAMETER_PHOTO_DONE ) )
                         {
                             _dansmarueUploadHandler.removeFileItem( PARAMETER_PHOTO_DONE, request.getSession( ), 0 );
+                            request.getSession( ).removeAttribute( PARAMETER_PHOTO_DONE );
                         }
 
                         UrlItem urlItem;
